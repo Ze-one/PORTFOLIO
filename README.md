@@ -1,11 +1,9 @@
+# Create Premium Portfolio Landing Page
 
-  # Create Premium Portfolio Landing Page
+This is a code bundle for Create Premium Portfolio Landing Page. The original project is available at https://www.figma.com/design/l8SRMBJGoEOt6Hd3qLbuQO/Create-Premium-Portfolio-Landing-Page.
 
-  This is a code bundle for Create Premium Portfolio Landing Page. The original project is available at https://www.figma.com/design/l8SRMBJGoEOt6Hd3qLbuQO/Create-Premium-Portfolio-Landing-Page.
+## Running the code
 
-  ## Running the code
+Run `npm i` to install the dependencies.
 
-  Run `npm i` to install the dependencies.
-
-  Run `npm run dev` to start the development server.
-  
+Run `npm run dev` to start the development server.
