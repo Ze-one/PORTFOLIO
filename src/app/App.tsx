@@ -885,9 +885,9 @@ const Hero = () => {
               className="flex items-center gap-3"
             >
               {[
-                { icon: Linkedin, href: "https://linkedin.com/in/abdel-samad-075", label: "LinkedIn", c: "#0A66C2" },
-                { icon: Mail, href: "mailto:abdel.samad@etsntechl.org", label: "Email", c: "#22D3EE" },
-                { icon: Github, href: "https://github.com", label: "GitHub", c: "#e2e8f0" },
+                { icon: Linkedin, href: "https://www.linkedin.com/in/abdel-samad-5b1335406/", label: "LinkedIn", c: "#0A66C2" },
+                { icon: Mail, href: "mailto:abdel.samad@etsntech.org", label: "Email", c: "#22D3EE" },
+                { icon: Github, href: "https://github.com/Ze-one", label: "GitHub", c: "#e2e8f0" },
                 { icon: Phone, href: "tel:+237640116221", label: "Phone", c: "#34D399" },
               ].map(({ icon: Icon, href, label, c }) => (
                 <a
@@ -1610,10 +1610,10 @@ const Contact = () => {
             </p>
             <div className="space-y-4">
               {[
-                { icon: Mail, label: "Email", value: "abdel.samad@etsntechl.org", href: "mailto:abdel.samad@etsntechl.org" },
+                { icon: Mail, label: "Email", value: "abdel.samad@etsntechl.org", href: "mailto:abdel.samad@etsntech.org" },
                 { icon: Phone, label: "Phone", value: "(+237) 640 116 221", href: "tel:+237640116221" },
                 { icon: MapPin, label: "Location", value: "Yaoundé, Cameroon", href: undefined },
-                { icon: Linkedin, label: "LinkedIn", value: "linkedin.com/in/abdel-samad-075", href: "https://linkedin.com/in/abdel-samad-075" },
+                { icon: Linkedin, label: "LinkedIn", value: "linkedin.com/in/abdel-samad-075", href: "https://www.linkedin.com/in/abdel-samad-5b1335406/" },
               ].map(({ icon: Icon, label, value, href }) => (
                 <div
                   key={label}
@@ -1743,8 +1743,8 @@ const Footer = () => (
 
       <div className="flex items-center gap-3">
         {[
-          { icon: Linkedin, href: "https://linkedin.com/in/abdel-samad-075", label: "LinkedIn" },
-          { icon: Mail, href: "mailto:abdel.samad@etsntechl.org", label: "Email" },
+          { icon: Linkedin, href: "https://www.linkedin.com/in/abdel-samad-5b1335406/", label: "LinkedIn" },
+          { icon: Mail, href: "mailto:abdel.samad@etsntech.org", label: "Email" },
           { icon: Github, href: "https://github.com", label: "GitHub" },
           { icon: Phone, href: "tel:+237640116221", label: "Phone" },
         ].map(({ icon: Icon, href, label }) => (
