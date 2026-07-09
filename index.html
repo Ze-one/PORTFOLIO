@@ -37,8 +37,8 @@
           position: absolute;
           right: 0;
           bottom: 78px;
-          width: min(360px, calc(100vw - 28px));
-          height: 520px;
+          width: min(380px, calc(100vw - 28px));
+          height: 540px;
           max-height: calc(100vh - 120px);
           display: none;
           flex-direction: column;
@@ -92,7 +92,7 @@
           gap: 8px;
           padding: 0 16px 12px;
         }
-        .pc-chip, .pc-wa {
+        .pc-chip, .pc-wa, .pc-email {
           border: 1px solid rgba(255,255,255,0.12);
           background: rgba(255,255,255,0.04);
           color: #cbd5e1;
@@ -106,6 +106,11 @@
           background: rgba(34, 197, 94, 0.14);
           color: #86efac;
           border-color: rgba(34, 197, 94, 0.25);
+        }
+        .pc-email {
+          background: rgba(34, 211, 238, 0.12);
+          color: #67e8f9;
+          border-color: rgba(34, 211, 238, 0.25);
         }
         .pc-input-row {
           display: flex;
@@ -231,13 +236,31 @@
 
         function initPortfolioChatbot() {
           if (document.getElementById('portfolio-chatbot')) return;
+          const email = window.__PORTFOLIO_CONTACT_EMAIL__;
           const whatsappNumber = window.__PORTFOLIO_WHATSAPP__;
           const whatsappText = encodeURIComponent('Hello Abdel Samad, I visited your portfolio and would like to contact you.');
           const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappText}`;
+          const emailUrl = `mailto:${email}?subject=${encodeURIComponent('Portfolio Contact')}&body=${encodeURIComponent('Hello Abdel Samad, I visited your portfolio and would like to contact you.')}`;
           const answers = [
             {
-              keys: ['who', 'about', 'profile', 'yourself'],
-              text: 'I am PEPOUERE NGOUH ABDEL SAMAD, an IT Engineer and Networking & Security Specialist based in Yaoundé, Cameroon.'
+              keys: ['who', 'about', 'profile', 'yourself', 'introduce'],
+              text: 'I am PEPOUERE NGOUH ABDEL SAMAD, an IT Engineer and Networking & Security Specialist based in Yaoundé, Cameroon. I focus on designing, securing, virtualizing and monitoring enterprise IT infrastructure.'
+            },
+            {
+              keys: ['old', 'age', 'how old'],
+              text: 'I prefer to keep my exact age private on the public portfolio. What I can say is that I am a young, active IT professional with hands-on experience in networking, cybersecurity, virtualization and infrastructure monitoring.'
+            },
+            {
+              keys: ['pressure', 'under pressure', 'stress', 'deadline', 'difficult situation'],
+              text: 'Under pressure, I stay calm and structured. I first identify the real priority, break the issue into smaller parts, communicate clearly, and focus on solving the most critical problem first. In IT, pressure is normal, especially during incidents, so I rely on documentation, testing and teamwork.'
+            },
+            {
+              keys: ['strength', 'strong', 'best quality'],
+              text: 'My strongest qualities are problem-solving, adaptability, communication and the ability to connect networking, security and systems thinking into practical solutions.'
+            },
+            {
+              keys: ['weakness', 'improve', 'challenge'],
+              text: 'One area I continuously improve is balancing speed with documentation. I can move fast technically, but I also make sure solutions are documented so teams can maintain them properly.'
             },
             {
               keys: ['skill', 'skills', 'technology', 'stack'],
@@ -256,9 +279,13 @@
               text: 'My background includes Computer Network Engineering, Network & Security studies, and certifications such as Cisco Cybersecurity Essentials and CompTIA Security+.'
             },
             {
-              keys: ['contact', 'whatsapp', 'phone', 'hire', 'opportunity', 'email'],
-              text: 'You can contact me by email at abdel.samad@etsntech.org or continue directly on WhatsApp using the green button below.',
-              whatsapp: true
+              keys: ['why hire', 'hire you', 'opportunity', 'available', 'collaborate'],
+              text: 'I bring practical field experience, a strong learning mindset, and the ability to design solutions that are secure, scalable and useful for real users. I am available for IT, networking and cybersecurity opportunities.'
+            },
+            {
+              keys: ['contact', 'whatsapp', 'phone', 'hire', 'email', 'mail', 'reach'],
+              text: 'You can contact me by email at abdel.samad@etsntech.org or continue directly on WhatsApp. Use either contact button below.',
+              contact: true
             }
           ];
 
@@ -268,15 +295,17 @@
             <div id="portfolio-chatbot-panel" aria-label="Portfolio chatbot">
               <div class="pc-header">
                 <p class="pc-title">Ask about Abdel Samad</p>
-                <p class="pc-subtitle">I can answer basic questions about skills, experience, projects and contact options.</p>
+                <p class="pc-subtitle">I can answer questions about skills, experience, projects, pressure handling and contact options.</p>
               </div>
               <div class="pc-messages" id="pc-messages"></div>
               <div class="pc-actions">
                 <button class="pc-chip" data-question="Who are you?">Who are you?</button>
+                <button class="pc-chip" data-question="How old are you?">Age</button>
+                <button class="pc-chip" data-question="How do you feel under pressure?">Pressure</button>
                 <button class="pc-chip" data-question="What are your skills?">Skills</button>
-                <button class="pc-chip" data-question="What projects have you done?">Projects</button>
                 <button class="pc-chip" data-question="How can I contact you?">Contact</button>
                 <a class="pc-wa" href="${whatsappUrl}" target="_blank" rel="noopener noreferrer">WhatsApp Abdel</a>
+                <a class="pc-email" href="${emailUrl}">Email Abdel</a>
               </div>
               <div class="pc-input-row">
                 <input id="pc-input" type="text" placeholder="Ask a question..." />
@@ -300,10 +329,10 @@
             messages.scrollTop = messages.scrollHeight;
           }
 
-          function addWhatsAppPrompt() {
+          function addContactPrompt() {
             const div = document.createElement('div');
             div.className = 'pc-message pc-bot';
-            div.innerHTML = `For direct contact, WhatsApp is the fastest option.<br><br><a class="pc-wa" href="${whatsappUrl}" target="_blank" rel="noopener noreferrer">Open WhatsApp Chat</a>`;
+            div.innerHTML = `You can reach Abdel Samad through either option:<br><br><a class="pc-wa" href="${whatsappUrl}" target="_blank" rel="noopener noreferrer">WhatsApp Abdel</a> <a class="pc-email" href="${emailUrl}">Email Abdel</a>`;
             messages.appendChild(div);
             messages.scrollTop = messages.scrollHeight;
           }
@@ -316,17 +345,17 @@
             const match = answers.find(function (item) { return item.keys.some(function (key) { return lower.includes(key); }); });
             if (match) {
               addMessage(match.text, 'bot');
-              if (match.whatsapp) addWhatsAppPrompt();
+              if (match.contact) addContactPrompt();
               return;
             }
-            addMessage('I can help with basic questions about Abdel Samad’s profile, skills, projects, experience, education and contact options. For a direct discussion, you can contact him on WhatsApp.', 'bot');
-            addWhatsAppPrompt();
+            addMessage('I can help with questions about Abdel Samad’s profile, age, pressure handling, skills, projects, experience, education and contact options. For a direct discussion, you can contact him by email or WhatsApp.', 'bot');
+            addContactPrompt();
           }
 
           toggle.addEventListener('click', function () {
             bot.classList.toggle('open');
             if (bot.classList.contains('open') && messages.children.length === 0) {
-              addMessage('Hello, I am Abdel Samad’s portfolio assistant. Ask me about his skills, projects, experience, or how to contact him.', 'bot');
+              addMessage('Hello, I am Abdel Samad’s portfolio assistant. Ask me about his skills, projects, experience, pressure handling, or how to contact him.', 'bot');
             }
           });
           send.addEventListener('click', function () { reply(input.value); input.value = ''; input.focus(); });
