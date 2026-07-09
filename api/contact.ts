@@ -1,5 +1,7 @@
 const CONTACT_TO = 'abdel.samad@ets.ntech.org';
 
+type ContactInput = { name: string; email: string; subject: string; message: string };
+
 function clean(value: unknown, max = 2000) {
   return String(value || '').trim().slice(0, max);
 }
@@ -17,11 +19,28 @@ function escapeHtml(value: string) {
     .replace(/'/g, '&#039;');
 }
 
-async function sendWithSendGrid(input: { name: string; email: string; subject: string; message: string }) {
-  const apiKey = process.env.SENDGRID_API_KEY || '';
-  if (!apiKey) return { configured: false };
+function detectSendGridIssue(status: number, detail: string) {
+  const text = detail.toLowerCase();
+  if (status === 401) {
+    return 'SendGrid rejected the API key. Create a new key, add it as SENDGRID_API_KEY, then redeploy.';
+  }
+  if (status === 403 || text.includes('sender identity') || text.includes('verified sender')) {
+    return 'SendGrid rejected the sender email. Verify CONTACT_FROM_EMAIL in SendGrid Sender Authentication, then redeploy.';
+  }
+  if (text.includes('permission') || text.includes('forbidden')) {
+    return 'SendGrid blocked this request because of sender/API permissions. Check the API key permissions and verified sender.';
+  }
+  return 'SendGrid could not send the email. Check the Vercel runtime logs for the SendGrid response.';
+}
 
-  const fromEmail = process.env.CONTACT_FROM_EMAIL || process.env.SENDGRID_FROM_EMAIL || CONTACT_TO;
+async function sendWithSendGrid(input: ContactInput) {
+  const apiKey = process.env.SENDGRID_API_KEY || '';
+  if (!apiKey) return { ok: false, status: 500, message: 'SENDGRID_API_KEY is missing in Vercel environment variables.' };
+
+  const fromEmail = process.env.CONTACT_FROM_EMAIL || process.env.SENDGRID_FROM_EMAIL || '';
+  if (!fromEmail) return { ok: false, status: 500, message: 'CONTACT_FROM_EMAIL is missing in Vercel environment variables.' };
+  if (!isEmail(fromEmail)) return { ok: false, status: 500, message: 'CONTACT_FROM_EMAIL is not a valid email address.' };
+
   const fromName = process.env.CONTACT_FROM_NAME || 'Abdel Samad Portfolio';
   const safeName = escapeHtml(input.name);
   const safeEmail = escapeHtml(input.email);
@@ -58,10 +77,11 @@ async function sendWithSendGrid(input: { name: string; email: string; subject: s
 
   if (!response.ok) {
     const detail = await response.text().catch(() => '');
-    throw new Error(`SendGrid failed with status ${response.status}: ${detail}`);
+    console.error('[CONTACT_FORM_SENDGRID]', { status: response.status, detail });
+    return { ok: false, status: response.status, message: detectSendGridIssue(response.status, detail) };
   }
 
-  return { configured: true };
+  return { ok: true, status: 200, message: 'Message sent.' };
 }
 
 export default async function handler(req: any, res: any) {
@@ -78,7 +98,6 @@ export default async function handler(req: any, res: any) {
     const message = clean(req.body?.message, 5000);
     const website = clean(req.body?.website, 200);
 
-    // Hidden honeypot field: real users leave this empty.
     if (website) {
       res.status(200).json({ success: true });
       return;
@@ -95,8 +114,8 @@ export default async function handler(req: any, res: any) {
     }
 
     const result = await sendWithSendGrid({ name, email, subject, message });
-    if (!result.configured) {
-      res.status(500).json({ error: 'Email service is not configured. Add SENDGRID_API_KEY and CONTACT_FROM_EMAIL in Vercel environment variables.' });
+    if (!result.ok) {
+      res.status(result.status >= 400 && result.status < 500 ? 400 : 500).json({ error: result.message });
       return;
     }
 
