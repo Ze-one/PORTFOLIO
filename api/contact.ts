@@ -1,4 +1,4 @@
-const CONTACT_TO = 'abdel.samad@ets.ntech.org';
+const CONTACT_TO = 'abdel.samad@etsntech.org';
 
 type ContactInput = { name: string; email: string; subject: string; message: string };
 
