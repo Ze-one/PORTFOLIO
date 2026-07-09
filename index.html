@@ -15,8 +15,57 @@
     <body>
       
       <div id="root"></div>
+      <script>
+        window.__PORTFOLIO_CONTACT_ENABLED__ = true;
+        document.addEventListener('submit', async function (event) {
+          const form = event.target;
+          if (!(form instanceof HTMLFormElement)) return;
+
+          const nameInput = form.querySelector('#contact-name');
+          const emailInput = form.querySelector('#contact-email');
+          const subjectInput = form.querySelector('#contact-subject');
+          const messageInput = form.querySelector('#contact-message');
+          if (!nameInput || !emailInput || !subjectInput || !messageInput) return;
+
+          event.preventDefault();
+          event.stopPropagation();
+          if (typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
+
+          const button = form.querySelector('button[type="submit"]');
+          const originalButtonHtml = button ? button.innerHTML : '';
+          const setButton = (html, disabled) => {
+            if (!button) return;
+            button.innerHTML = html;
+            button.disabled = disabled;
+          };
+
+          setButton('Sending...', true);
+
+          try {
+            const response = await fetch('/api/contact', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                name: nameInput.value,
+                email: emailInput.value,
+                subject: subjectInput.value,
+                message: messageInput.value,
+                website: ''
+              })
+            });
+
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(data.error || 'Message could not be sent.');
+
+            form.innerHTML = '<div style="text-align:center;padding:48px 16px;color:white"><div style="font-size:42px;margin-bottom:12px;color:#4ade80">✓</div><h3 style="font-size:20px;font-weight:700;margin:0 0 8px">Message sent!</h3><p style="color:#94a3b8;margin:0">Your message has been sent to abdel.samad@ets.ntech.org.</p></div>';
+          } catch (error) {
+            alert(error && error.message ? error.message : 'Message could not be sent. Please try again or email directly.');
+            setButton(originalButtonHtml || 'Send Message', false);
+          }
+        }, true);
+      </script>
       <script type="module" src="/src/main.tsx"></script>
       
     </body>
   </html>
-  
+   
